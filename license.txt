@@ -1,0 +1,17 @@
+Source code of this example for lessons from =A=L=X= (aa_dav@mail.ru)
+is open source and released into the Public Domain. You can 
+use it for any purpose without restrictions: redistribute, modify, use 
+for commercial and non-commercial projects. You may credit the author, 
+inform the author about your project, donate, etc, but nothing is 
+obligatory, you could do it at free will. Obviously, the source code
+provided AS IS without warranties of any kind, the author is not 
+responsible for anything. 
+
+Исходный код этого примера для уроков от =A=L=X= (aa_dav@mail.ru) - 
+открытый программный код и является Общественным Достоянием.
+Вы можете исопльзовать его для любых целей без ограничений, включая
+коммерческое и некоммерческое использование. Вы можете упомянуть автора,
+сообщить автору о вашем проекте, сделать пожертвование и т.п., но
+всё это не является обязательным. Очевидно, исходный код предоставлен
+КАК ЕСТЬ без гарантий любого рода, автор не отвечает за последствия
+любого рода.
