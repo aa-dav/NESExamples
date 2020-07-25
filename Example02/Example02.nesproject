@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<nesicideproject target="nes" version="0.3" title="Example02">
+ <properties assembleradditionaloptions="" assemblerdefinedsymbols="" linkeradditionaloptions="" linkeradditionaldependencies="" chrromoutputname="Example02.chr" sourcesearchpaths="C:/Devel/NES/Nesicide/cc65/libsrc/nes;C:/Devel/NES/Nesicide/cc65/libsrc" compilerdefinedsymbols="" cartridgesavestatename="example02.sav" headerfilename="project_data.h" assemblerincludepaths="-I ." compileradditionaloptions="" sourcefilename="project_data.s" debuginfoname="Example02.dbg" chrromoutputbasepath="obj/nes" outputbasepath="obj/nes" linkeroutputname="Example02.prg" outputname="Example02" chrrom="1" cartridgeoutputname="Example02.nes" customrulesfile="" linkeroutputbasepath="obj/nes" linkerconfigfile="nes.ini" compilerincludepaths="-I .">
+  <tileproperties/>
+  <palette>
+   <entry g="102" r="102" index="0" b="102"/>
+   <entry g="42" r="0" index="1" b="136"/>
+   <entry g="18" r="20" index="2" b="167"/>
+   <entry g="0" r="59" index="3" b="164"/>
+   <entry g="0" r="92" index="4" b="126"/>
+   <entry g="0" r="110" index="5" b="64"/>
+   <entry g="6" r="108" index="6" b="0"/>
+   <entry g="29" r="86" index="7" b="0"/>
+   <entry g="53" r="51" index="8" b="0"/>
+   <entry g="72" r="11" index="9" b="0"/>
+   <entry g="82" r="0" index="10" b="0"/>
+   <entry g="79" r="0" index="11" b="8"/>
+   <entry g="64" r="0" index="12" b="77"/>
+   <entry g="0" r="0" index="13" b="0"/>
+   <entry g="0" r="0" index="14" b="0"/>
+   <entry g="0" r="0" index="15" b="0"/>
+   <entry g="173" r="173" index="16" b="173"/>
+   <entry g="95" r="21" index="17" b="217"/>
+   <entry g="64" r="66" index="18" b="255"/>
+   <entry g="39" r="117" index="19" b="254"/>
+   <entry g="26" r="160" index="20" b="204"/>
+   <entry g="30" r="183" index="21" b="123"/>
+   <entry g="49" r="181" index="22" b="32"/>
+   <entry g="78" r="153" index="23" b="0"/>
+   <entry g="109" r="107" index="24" b="0"/>
+   <entry g="135" r="56" index="25" b="0"/>
+   <entry g="147" r="12" index="26" b="0"/>
+   <entry g="143" r="0" index="27" b="50"/>
+   <entry g="124" r="0" index="28" b="141"/>
+   <entry g="0" r="0" index="29" b="0"/>
+   <entry g="0" r="0" index="30" b="0"/>
+   <entry g="0" r="0" index="31" b="0"/>
+   <entry g="254" r="255" index="32" b="255"/>
+   <entry g="176" r="100" index="33" b="255"/>
+   <entry g="144" r="146" index="34" b="255"/>
+   <entry g="118" r="198" index="35" b="255"/>
+   <entry g="106" r="243" index="36" b="255"/>
+   <entry g="110" r="254" index="37" b="204"/>
+   <entry g="129" r="254" index="38" b="112"/>
+   <entry g="158" r="234" index="39" b="34"/>
+   <entry g="190" r="188" index="40" b="0"/>
+   <entry g="216" r="136" index="41" b="0"/>
+   <entry g="228" r="92" index="42" b="48"/>
+   <entry g="224" r="69" index="43" b="130"/>
+   <entry g="205" r="72" index="44" b="222"/>
+   <entry g="79" r="79" index="45" b="79"/>
+   <entry g="0" r="0" index="46" b="0"/>
+   <entry g="0" r="0" index="47" b="0"/>
+   <entry g="254" r="255" index="48" b="255"/>
+   <entry g="223" r="192" index="49" b="255"/>
+   <entry g="210" r="211" index="50" b="255"/>
+   <entry g="200" r="232" index="51" b="255"/>
+   <entry g="194" r="251" index="52" b="255"/>
+   <entry g="196" r="254" index="53" b="234"/>
+   <entry g="204" r="254" index="54" b="197"/>
+   <entry g="216" r="247" index="55" b="165"/>
+   <entry g="229" r="228" index="56" b="148"/>
+   <entry g="239" r="207" index="57" b="150"/>
+   <entry g="244" r="189" index="58" b="171"/>
+   <entry g="243" r="179" index="59" b="204"/>
+   <entry g="235" r="181" index="60" b="242"/>
+   <entry g="184" r="184" index="61" b="184"/>
+   <entry g="0" r="0" index="62" b="0"/>
+   <entry g="0" r="0" index="63" b="0"/>
+  </palette>
+ </properties>
+ <inspectors>
+  <symbolinspector/>
+  <breakpoints/>
+  <markers>
+   <marker startaddr="0" state="0" endabsaddr="0" startabsaddr="0" endaddr="0" index="0"/>
+   <marker startaddr="0" state="0" endabsaddr="0" startabsaddr="0" endaddr="0" index="1"/>
+   <marker startaddr="0" state="0" endabsaddr="0" startabsaddr="0" endaddr="0" index="2"/>
+   <marker startaddr="0" state="0" endabsaddr="0" startabsaddr="0" endaddr="0" index="3"/>
+   <marker startaddr="0" state="0" endabsaddr="0" startabsaddr="0" endaddr="0" index="4"/>
+   <marker startaddr="0" state="0" endabsaddr="0" startabsaddr="0" endaddr="0" index="5"/>
+   <marker startaddr="0" state="0" endabsaddr="0" startabsaddr="0" endaddr="0" index="6"/>
+   <marker startaddr="0" state="0" endabsaddr="0" startabsaddr="0" endaddr="0" index="7"/>
+  </markers>
+ </inspectors>
+ <cartridge mirrorMode="1" hasBatteryBackedRam="0" mapperNumber="0" fourScreen="0"/>
+ <project>
+  <primitives>
+   <attributetables/>
+   <tiles/>
+  </primitives>
+  <sources>
+   <source uuid="{85df0f74-f09f-439c-8488-3e00605a5140}" path="src/main.s" name="src/main.s"/>
+   <source uuid="{5b479828-f693-4ff0-9b0b-a17370dd53b5}" path="src/header.s" name="src/header.s"/>
+   <source uuid="{048e02d7-fd18-449a-9038-6f52561bcc60}" path="src/neslib.inc" name="src/neslib.inc"/>
+   <source uuid="{e419bcd6-b5fc-41e1-8450-7cf3ec6295ea}" path="src/neslib.s" name="src/neslib.s"/>
+  </sources>
+  <binaryfiles>
+   <binaryfile uuid="{b2dc5fc9-a56d-4e66-97bf-6b3cc3668587}" ysize="128" path="tilesets/gamegfx.png" name="tilesets/gamegfx.png" xsize="128"/>
+   <binaryfile uuid="{bdb3ec5c-e001-4f0d-9bbb-296914f99997}" ysize="128" path="tilesets/titlegfx.png" name="tilesets/titlegfx.png" xsize="128"/>
+  </binaryfiles>
+  <graphicsbanks>
+   <graphicsbank uuid="{cb39773a-0926-42ac-814f-9b3f12664f16}" name="bank0">
+    <graphicitem uuid="{bdb3ec5c-e001-4f0d-9bbb-296914f99997}"/>
+    <graphicitem uuid="{b2dc5fc9-a56d-4e66-97bf-6b3cc3668587}"/>
+   </graphicsbank>
+  </graphicsbanks>
+  <sounds>
+   <musics/>
+  </sounds>
+ </project>
+</nesicideproject>
