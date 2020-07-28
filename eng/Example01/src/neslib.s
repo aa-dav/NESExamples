@@ -1,18 +1,17 @@
-.include "neslib.inc"	; подключим заголовк neslib.inc
+.include "neslib.inc"	; include header neslib.inc
 
-; Сегмент нулевой страницы zero page (помечен явно через :zp).
+; Zero-page segment (because of non-standard for CA65 name we need to mark it as :zp)
 .segment "ZPAGE": zp
 
-; Временные переменные и параметры в zero page общим объёмом 8 байт.
-; Если процедуры используют их как входные параметры или портят, то 
-; это следует описать в комментариях.
-; Четыре двухбайтовых слова или адреса...
+; Temporary variables and procedure's parameters with overall size of 8 bytes.
+; If procedures use them as inputs or use as vars it should be mentioned in comments.
+; Define four words (2 bytes each):
 arg0w:		.word 0
 arg1w:		.word 0
 arg2w:		.word 0
 arg3w:		.word 0
-; ...и восемь байт, которые занимают места в соответсвующих словах по порядку,
-; т.е., например, arg2w и arg4b/arg5b занимают одно и то же место в zero page.
+; ...and eight bytes which are located in words in ascending order...
+; (that is arg2w and arg4b/arg5b are located in the same space in zero-page)
 arg0b		= arg0w + 0
 arg1b		= arg0w + 1
 arg2b		= arg1w + 0
@@ -22,38 +21,39 @@ arg5b		= arg2w + 1
 arg6b		= arg3w + 0
 arg7b		= arg3w + 1
 
-; Текущие нажатые на геймпадах кнопки (на момент последнего вызова update_keys).
+; Bit flags of state of gamepads (procedure update_keys updates them).
 keys1_is_down:	.byte 0
 keys2_is_down:	.byte 0
 
-; Сегмент неинициализированных данных в RAM консоли.
-; Все заданные здесь переменные и данные должны быть заполнены нулями
-; иначе линкер будет ругаться на инициализированную переменную. 
-; Однако во время запуска программы их содержимое неизвестно и будет 
-; занулятся явным образом в процедуре warm_up.
+; Segment of uninitialized data in console's RAM.
+; All data here must be filled with zeroes in code, otherwise
+; linker will generate error. 
+; But we do not know their actual values at the start of console!
+; So we need to zero them in procedure warm_up.
 .segment "RAM"			
 				
-; Кнопки нажатые на геймпадах во время предыдущего вызова update_keys.
+; Bit flags of previous state of gamepads (procedure update_keys updates them).
 keys1_prev:	.byte 0
 keys2_prev:	.byte 0
-; Кнопки которые не были нажаты на предыдущем вызове update_keys и оказавшиеся нажатыми на текущем.
+; Bit flags of gamepads keys which were not set in keys1_prev and are set in keys_is_down
+; (procedure update_keys updates them)..
 keys1_was_pressed:	.byte 0
 keys2_was_pressed:	.byte 0
 
-; Сегмент кода в ROM картриджа, причём последние его 16 Кб ($C000-FFFF).
-; Третья четверть ROM ($8000-BFFF) пока зарезервирована под использование с мапперами.
+; Segment of cartridge ROM - last of it's 16 Кб ($C000-FFFF).
 .segment "ROM_H"
 
-; update_keys - перечитать кнопки с геймпадов 1 и 2.
-; текущие зажатые кнопки -> keysX_is_down
-; предыдущие зажатые кнопки -> keysX_prev
-; кнопки нажатые между этими состояниями -> keyX_was_pressed
-; Код адаптирован из https://wiki.nesdev.com/w/index.php/Controller_reading_code
+; update_keys - reread state of gampad keys from both of them.
+; previous keysX_is_down -> keysX_prev
+; keys which are down now -> keysX_is_down
+; keys which were pressed between prev and now -> keyX_was_pressed
+; This code is based on article: https://wiki.nesdev.com/w/index.php/Controller_reading_code
+; Alert! This code will be unstable with activated DPCM sound channel! Read article!
 .proc update_keys
-	; Сохраняем предыдущие нажатые кнопки
+	; Save previous key states in keysX_prev
 	store keys1_prev, keys1_is_down
 	store keys2_prev, keys1_is_down
-	; Инициируем опрос геймпадов записью 1 в нижний бит JOY_PAD1
+	; Initiate gamepad reading by writing 1 into lowest bit of JOY_PAD1
 	lda # $01		; После записи в порт 1 состояния кнопок начинают в геймпадах
 	sta JOY_PAD1		; постоянно записываться в регистры-защёлки...
 	sta keys2_is_down	; Этот же единичный бит используем для остановки цикла ниже
