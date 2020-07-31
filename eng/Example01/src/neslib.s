@@ -54,46 +54,47 @@ keys2_was_pressed:	.byte 0
 	store keys1_prev, keys1_is_down
 	store keys2_prev, keys1_is_down
 	; Initiate gamepad reading by writing 1 into lowest bit of JOY_PAD1
-	lda # $01		; После записи в порт 1 состояния кнопок начинают в геймпадах
-	sta JOY_PAD1		; постоянно записываться в регистры-защёлки...
-	sta keys2_is_down	; Этот же единичный бит используем для остановки цикла ниже
-	lsr a			; Обнуляем аккумулятор (тут быстрее всего сделать это сдвигом вправо)
-	sta JOY_PAD1		; Запись 0 в JOY_PAD1 фиксирует регистры-защёлки и их можно считывать
+	lda # $01		; Load 1 into A
+	sta JOY_PAD1		; save it to JOY_PAD1
+	sta keys2_is_down	; save 1 to keys2_is_down - we'll use it as stop bit in carry flag
+	lsr a			; This shift to right will zero accumulator
+	sta JOY_PAD1		; Writing 0 to JOY_PAD1 will fix gamepad state in it's internal shift register
 	
-loop:	lda JOY_PAD1		; Грузим очередную кнопку от первого контроллера
-	and # %00000011		; Нижний бит - стандартный контроллер, следующий - от порта расширения
-	cmp # $01		; Бит Carry установится в 1 только если в аккумуляторе не 0 (т.е. нажатие)
-	rol keys1_is_down	; Прокрутка keys1_pressed через Carry, если Ki - это i-ый бит, то:
+loop:	lda JOY_PAD1		; Load state of next button from shift register
+	and # %00000011		; Bit 0 is for standard gamepad, bit 1 is for gamepad in extension port
+	cmp # $01		; Carry flag will be set to 1 if A is not 0 (that is button is pressed)
+	rol keys1_is_down	; Rotate keys1_pressed through carry flag. That is, if Ki is i-th bit, then:
 				; NewCarry <- K7 <- K6 <- ... <- K1 <- K0 <- OldCarry
-	lda JOY_PAD2		; Делаем всё то же самое для второго геймпада...
+
+	lda JOY_PAD2		; Repeat all above for the second gamepad...
 	and # %00000011
 	cmp # $01
-	rol keys2_is_down	; Однако на прокрутке keys2_pressed в восьмой раз в Carry выпадет
-	bcc loop		; единица которую мы положили в самом начале и цикл завершится.
-	; Далее обновляем keysX_was_pressed - логический AND нового состояния кнопок с NOT предыдущего,
-	; т.е. "то что было отжато ранее, но нажато сейчас".
-	lda keys1_prev		; берём предыдущее состояние,
-	eor # $FF		; инвертируем (через A XOR $FF),
-	and keys1_is_down	; накладываем по AND на новое состояние,
-	sta keys1_was_pressed	; и сохраняем в keys_was_pressed
+	rol keys2_is_down	; But after 8-th ROL carry flag will be filled with 1
+	bcc loop		; which we had placed in the start and loop will be over.
+	; Update keysX_was_pressed - this is logical AND of new state with NOT of previous one,
+	; that is "bits which were 0 before and became 1 now".
+	lda keys1_prev		; Load previous state in A,
+	eor # $FF		; invert it's bits ('A XOR $FF' works as 'NOT A'),
+	and keys1_is_down	; apply AND with new state,
+	sta keys1_was_pressed	; and save result to keys_was_pressed.
 	
-	lda keys2_prev		; и всё то же самое для второго геймпада...
+	lda keys2_prev		; Repeat all above for the second gamepad...
 	eor # $FF
 	and keys2_is_down
 	sta keys2_was_pressed
-	rts			; возвращаемся из процедуры
+	rts			; return from procedure
 .endproc
 
-; clear_ram - очистка памяти zero page и участка $0200-07FF
-; портит: arg0w
+; clear_ram - fill by 0 zero-page and memory region $0200-07FF
+; destroys: arg0w
 .proc clear_ram
-	; Очистка zero page
+	; Zeroing of zero-page
 	lda # $00		; a = 0
 	ldx # $00		; x = 0
 loop1:	sta $00, x		; [ $00 + x ] = y
 	inx			; x++
 	bne loop1		; if ( x != 0 ) goto loop1
-	; Очищаем участок памяти с $200-$7FF
+	; Zeroing of $200-$7FF
 	store_addr arg0w, $0200	; arg0w = $2000
 	lda # $00		; a = 0
 	ldx # $08		; x = 8
@@ -101,35 +102,34 @@ loop1:	sta $00, x		; [ $00 + x ] = y
 loop2:	sta (arg0w), y		; [ [ arg0w ] + y ] = a
 	iny			; y++
 	bne loop2		; if ( y != 0 ) goto loop2
-	inc arg0w + 1		; увеличиваем старший байт arg0w
-	cpx arg0w + 1		; и если он не достиг границы в X
-	bne loop2		; то повторяем цикл
-	rts			; возврат из процедуры
+	inc arg0w + 1		; increment high byte of arg0w
+	cpx arg0w + 1		; check if it becomes equal to X (8)
+	bne loop2		; if not - repeat
+	rts			; return from procedure
 .endproc
 
-; warm_up - "разогрев" - после включения дождаться пока PPU дойдёт
-; до рабочего состояния после чего с ним можно работать.
+; warm_up - wait for PPU to warm up
 .proc warm_up
 	lda # 0			; a = 0
-	sta PPU_CTRL		; Отключим прерывание NMI по VBlank
-	sta PPU_MASK		; Отключим вывод графики (фона и спрайтов)
-	sta APU_DMC_0		; Отключить прерывание IRQ цифрового звука
-	bit APU_STATUS		; Тоже как то влияет на отключение IRQ
-	sta APU_CONTROL		; Отключить все звуковые каналы
-	; Отключить IRQ FRAME_COUNTER (звук)
+	sta PPU_CTRL		; Disable NMI interrupt (VBlank)
+	sta PPU_MASK		; Disable video out (background and sprites)
+	sta APU_DMC_0		; Disable IRQ of digital sound generator
+	bit APU_STATUS		; Reading APU_STATUS disables frame interrupt flag
+	sta APU_CONTROL		; Disable all sound channels
+	; Disable IRQ FRAME_COUNTER IRQ
 	store APU_FRAME_COUNTER, # APU_FC_IRQ_OFF	
-	cld			; Отключить десятичный режим (который на Ricoh 2A03 и не работает)
+	cld			; Disable decimal mode (Ricoh 2A03 doesn't have it, so just for debuggers)
 
-	; Ждём наступления первого VBlank от видеочипа
-	bit PPU_STATUS		; Первый надо пропустить из-за ложного состояния при включении
-wait1:	bit PPU_STATUS		; Инструкция bit записывает старший бит аргумента во флаг знака
-	bpl wait1		; Поэтому bpl срабатывает при нулевом бите PPU_STAT_VBLANK
+	; Wait for first VBlank form PPU by reading PPU_STATUS
+	bit PPU_STATUS		; This instruction is needed because possible false condition on startup
+wait1:	bit PPU_STATUS		; BIT writes highest bit of argument into sign flag
+	bpl wait1		; so bpl (branch on plus) branches if bit PPU_STAT_VBLANK is zero
 
-	; Пока ждём второго VBlank - занулим RAM
+	; Clear RAM while waiting for second VBlank (we have a lot of time)...
 	jsr clear_ram
 
-	; Ждём еще одного VBlank
+	; Wait for next VBlank
 wait2:	bit PPU_STATUS
 	bpl wait2	
-	rts			; Выходим из процедуры
+	rts			; return from procedure
 .endproc

@@ -1,14 +1,14 @@
-.segment "HEADER"	; Переключимся на сегмент заголовка образа картриджа iNES
-.global SOMETEST7
+.segment "HEADER"	; Segment of iNES cartridge header
 
-MAPPER		= 0	; 0 = без маппера
-MIRRORING	= 1	; зеркалирование видеопамяти: 0 - горизонтальное, 1 - вертикальное
-HAS_SRAM	= 0	; 1 - есть SRAM (как правило на батарейке) по адресам $6000-7FFF
+			; Common options
+MAPPER		= 0	; 0 = no mapper (NROM)
+MIRRORING	= 1	; videomemory mirroring: 0 - horizontal, 1 - vertical
+HAS_SRAM	= 0	; 1 - has SRAM (usually battery-powered) at addresses $6000-7FFF
 
-.byte "NES", $1A	; заголовок
-.byte 2 		; число 16-килобайтных банков кода/данных
-.byte 1 		; число 8-килобайтных банков графики (битмапов тайлов)
-; флаги зеркалирования, наличия SRAM и нижние 4 бита номера маппера
+.byte "NES", $1A	; iNES header 'magic'
+.byte 2 		; number of 16Kb banks of code/data for CPU ROM (PRG)
+.byte 1 		; number of 8Kb banks of graphics data (CHR)
+; Mirroring, SRAM and lower four bits of mapper
 .byte MIRRORING | (HAS_SRAM << 1) | ((MAPPER & $0F) << 4)
-.byte MAPPER & $F0	; верхние 4 бита номера маппера
-.res 8, 0		; восемь нулевых байт (ключевое слово .res от "reserve")
+.byte MAPPER & $F0	; high four bits of mapper
+.res 8, 0		; eight zero bytes of unused fields
